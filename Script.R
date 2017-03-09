@@ -72,4 +72,45 @@ flights %>%
 
 # Window Function
 
+flights %>%
+  group_by(UniqueCarrier) %>%
+  select(Month, DayofMonth, DepDelay) %>%
+  filter(min_rank(desc(DepDelay)) <= 2) %>%
+  arrange(UniqueCarrier, desc(DepDelay))
+
+#This is the same as
+
+flights %>%
+  group_by(UniqueCarrier) %>%
+  select(Month, DayofMonth, DepDelay) %>%
+  top_n(2) %>%
+  arrange(UniqueCarrier, desc(DepDelay))
+
+flights %>%
+  group_by(Month) %>%
+  summarise(flight_count = n()) %>%
+  mutate(change = flight_count - lag(flight_count))
+
+flights %>%
+  group_by(Month) %>%
+  tally() %>%  #tally = summarise(flight_count = n())
+  mutate(change = n - lag(n))
+  
+
+# randomly sample some rows
+flights %>%
+  sample_n(5)
+
+flights %>%
+  sample_frac(0.25, replace = T)
+
+glimpse(flights)
+
+
+
+#Working with databases in Dplyr Package
+install.packages(RSQLite)
+library(RSQLite)
+my_db = src_sqlite("my_db.sqlite3")
+
 
